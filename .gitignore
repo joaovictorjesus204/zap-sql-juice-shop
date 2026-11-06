@@ -1,0 +1,6 @@
+reports/
+report_*.html
+report_*.json
+report_*.md
+*.sqlite
+__pycache__/

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Relatórios | Juice Shop</title>
+<style>
+  :root { --fundo:#f6f7f9; --cartao:#fff; --texto:#1d2330; --suave:#5b6475; --borda:#e2e5ea; --destaque:#c2410c; }
+  @media (prefers-color-scheme: dark) { :root { --fundo:#11141a; --cartao:#1a1f28; --texto:#e8ebf0; --suave:#9aa3b2; --borda:#2a3140; --destaque:#fb923c; } }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif; background:var(--fundo); color:var(--texto); line-height:1.5; }
+  main { max-width:860px; margin:0 auto; padding:40px 16px; }
+  h1 { font-size:1.6rem; margin:0 0 4px; }
+  p.sub { color:var(--suave); margin:0 0 28px; }
+  .grade { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:14px; }
+  a.cartao { display:block; background:var(--cartao); border:1px solid var(--borda); border-radius:10px; padding:18px; color:inherit; text-decoration:none; }
+  a.cartao:hover { border-color:var(--destaque); }
+  .tipo { font-size:.75rem; font-weight:600; letter-spacing:.04em; text-transform:uppercase; color:var(--destaque); }
+  h2 { font-size:1.05rem; margin:4px 0 6px; }
+  .cartao p { margin:0; color:var(--suave); font-size:.92rem; }
+  footer { margin-top:32px; color:var(--suave); font-size:.85rem; }
+  footer a { color:var(--destaque); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Segurança, dados e testes manuais no OWASP Juice Shop</h1>
+  <p class="sub">Relatórios gerados pelo GitHub Actions na última execução. Por João Victor de Jesus.</p>
+  <div class="grade">
+    <a class="cartao" href="zap-report.html"><span class="tipo">OWASP ZAP</span><h2>Varredura de segurança</h2><p>Alertas por nível de risco, com evidência e recomendação de correção.</p></a>
+    <a class="cartao" href="sql.html"><span class="tipo">SQL</span><h2>Validação de dados</h2><p>11 consultas no banco do app: integridade, registros órfãos e senhas em MD5.</p></a>
+    <a class="cartao" href="https://github.com/joaovictorjesus204/zap-sql-juice-shop/tree/main/testes-manuais"><span class="tipo">Manual</span><h2>Plano e casos de teste</h2><p>15 casos projetados por técnica; os 7 de prioridade P1 foram executados e passaram.</p></a>
+  </div>
+  <footer>Código: <a href="https://github.com/joaovictorjesus204/zap-sql-juice-shop">github.com/joaovictorjesus204/zap-sql-juice-shop</a></footer>
+</main>
+</body>
+</html>
