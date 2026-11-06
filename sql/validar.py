@@ -10,7 +10,7 @@ import sqlite3
 import sys
 
 BLOCO = re.compile(
-    r"--\s*\[(?P<id>SQL-\d+)\]\s*(?P<nome>.+?)\n--\s*esperado:\s*(?P<esperado>[^\n]+)\n(?P<sql>.*?;)",
+    r"--\s*\[(?P<id>SQL-\d+)\]\s*(?P<nome>.+?)\n(?:--(?!\s*esperado:)[^\n]*\n)*--\s*esperado:\s*(?P<esperado>[^\n]+)\n(?P<sql>.*?;)",
     re.S,
 )
 

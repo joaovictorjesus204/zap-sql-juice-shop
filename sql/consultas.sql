@@ -13,7 +13,9 @@ GROUP BY LOWER(email)
 HAVING COUNT(*) > 1;
 
 -- [SQL-02] Usuários com e-mail sem @
--- esperado: nenhuma linha
+-- Achado na primeira execução: o usuário "demo" é criado com o e-mail "demo". A tela de cadastro
+-- exige e-mail válido, mas o banco não tem essa regra: um dado fora do formato entra por outro caminho.
+-- esperado: achado
 SELECT id, email
 FROM Users
 WHERE email NOT LIKE '%_@_%';

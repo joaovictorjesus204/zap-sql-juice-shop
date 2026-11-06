@@ -28,7 +28,7 @@ Fazer varredura de segurança em sistema de terceiros sem autorização é crime
 |---|---|
 | Tipo de varredura | Baseline (passiva): o ZAP navega pelo app e analisa as respostas sem atacar |
 | Navegação | Spider tradicional e spider AJAX, porque o Juice Shop é uma SPA em Angular |
-| Critério de aceite | O pipeline reprova se aparecer alerta de risco **alto** (`zap/verificar_alertas.py`) |
+| Critério de aceite | O pipeline reprova se aparecer alerta de risco **alto novo**, fora da lista de achados já analisados (`zap/alertas-conhecidos.txt`) |
 | Relatório | HTML do ZAP com risco, evidência, URL afetada e recomendação de correção |
 
 Os alertas médios e baixos do Juice Shop são conhecidos, porque o app é vulnerável de propósito, e ficam documentados no relatório. Um alerta alto novo indica regressão de segurança.
@@ -40,7 +40,7 @@ O CI copia o banco SQLite do Juice Shop (`data/juiceshop.sqlite`) e roda as cons
 | ID | Consulta | Esperado |
 |---|---|---|
 | SQL-01 | E-mails duplicados entre usuários | nenhuma linha |
-| SQL-02 | Usuários com e-mail sem @ | nenhuma linha |
+| SQL-02 | Usuários com e-mail sem @ | **achado** |
 | SQL-03 | Produtos sem preço ou com preço ≤ 0 | nenhuma linha |
 | SQL-04 | Estoque negativo | nenhuma linha |
 | SQL-05 | Itens de cesta com quantidade < 1 | nenhuma linha |
@@ -56,6 +56,16 @@ Para rodar no computador com um banco baixado do artefato do CI:
 ```bash
 python sql/validar.py caminho/juiceshop.sqlite
 ```
+
+## Achados da primeira execução
+
+| Achado | Onde | Evidência | Tratamento |
+|---|---|---|---|
+| **Redirecionamento aberto** (Off-site Redirect, risco alto) | ZAP | O endereço `/redirect?to=` aceita levar o usuário para outro site. A validação confere se a URL *contém* um endereço permitido, e não se *é* um deles, então uma URL de outro domínio com o endereço permitido no meio passa | Registrado em `zap/alertas-conhecidos.txt`. É uma falha intencional do Juice Shop. Correção recomendada: comparar a URL inteira com a lista permitida |
+| **Usuário com e-mail sem @** | SQL-02 | O usuário `demo` está no banco com o e-mail `demo`. A tela de cadastro exige e-mail válido, mas o banco não tem essa regra: o dado entrou pela carga inicial, sem passar pela tela | Consulta marcada como achado. Correção recomendada: validar o formato também no modelo de dados, e não só na tela |
+| **Senhas em MD5 sem sal** | SQL-09 | As 24 senhas do banco têm 32 caracteres hexadecimais, o formato do MD5. MD5 sem sal é quebrado em segundos com tabelas prontas | Achado de segurança documentado. Correção recomendada: bcrypt ou Argon2 |
+
+Distribuição dos 21 tipos de alerta do ZAP na primeira execução: 1 alto, 4 médios, 8 baixos e 8 informativos.
 
 ## Testes manuais
 
@@ -93,7 +103,7 @@ pages/index.html              página inicial dos relatórios
 | Decisão | Por quê |
 |---|---|
 | **Varredura passiva no CI** | Rápida e segura para rodar toda semana. A varredura ativa (ataques) fica para um ambiente dedicado |
-| **Critério de aceite só para risco alto** | O app tem falhas médias de propósito. Reprovar em qualquer alerta deixaria o pipeline sempre vermelho e sem informação nova |
+| **Critério de aceite só para risco alto novo** | O app tem falhas de propósito. Os achados já analisados ficam numa lista versionada, com a explicação aqui no README. Reprovar em qualquer alerta deixaria o pipeline sempre vermelho e sem informação nova; assim, só um alerta alto novo reprova |
 | **SQL no banco real do app** | As consultas rodam nos dados que o próprio Juice Shop cria, e não numa base inventada |
 | **Resultado esperado escrito junto da consulta** | `consultas.sql` é legível por quem não programa e é a mesma fonte que o script executa |
 | **Banco aberto só para leitura** (`mode=ro`) | A validação nunca altera os dados |

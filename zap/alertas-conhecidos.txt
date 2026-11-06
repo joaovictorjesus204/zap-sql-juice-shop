@@ -1,0 +1,3 @@
+# Alertas de risco alto já conhecidos e documentados no README (um por linha, nome exato do ZAP).
+# O pipeline só reprova se aparecer um alerta alto que NÃO está nesta lista.
+Off-site Redirect
